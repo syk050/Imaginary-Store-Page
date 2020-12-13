@@ -2,6 +2,7 @@ var fs = require('fs');
 var ejs = require('ejs');
 var mysql = require('mysql');
 var express = require('express');
+var socketio = require('socket.io');
 var bodyParser = require('body-parser');
 
 // DB접근
@@ -11,10 +12,15 @@ var client = mysql.createConnection({
 
 // 서버 생성
 var app = express();
+var io = socketio();
+var server = require('http').createServer(app);
+
+io.attach(server);
 
 app.use(bodyParser.urlencoded({  extended: false   }));
+
 // 서버 실행
-app.listen(52273, function () {
+server.listen(52273, function () {
   console.log('server running at http://127.0.0.1:52273');
 });
 

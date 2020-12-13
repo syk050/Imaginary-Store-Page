@@ -1,47 +1,55 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-      .item_management_table{
-        border-collapse: collapse;
-        border-spacing: 0;
-        width: 100%;
-        border: 1px solid #ddd;
-      }
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    .item_management_table{
+      border-collapse: collapse;
+      border-spacing: 0;
+      width: 100%;
+      border: 1px solid #ddd;
+    }
 
-      .item_management_table th, td {
-        text-align: center;
-        padding: 16px;
-      }
+    .item_management_table th, td {
+      text-align: center;
+      padding: 16px;
+    }
 
-      .item_management_table th:first-child, 
-      .item_management_table td:first-child {
-        text-align: left;
-      }
+    .item_management_table th:first-child, 
+    .item_management_table td:first-child {
+      text-align: left;
+    }
 
-      .item_management_table tr:nth-child(even) {
-        background-color: #f2f2f2
-      }
+    .item_management_table tr:nth-child(even) {
+      background-color: #f2f2f2
+    }
 
-      .fa{
-        font-size: 1.5em;
-      }
+    .fa{
+      font-size: 1.5em;
+    }
 
-      .fa-circle-o {
-        color: black;
-      }
+    .fa-circle-o {
+      color: black;
+    }
 
-      .fa-check-circle-o{
-        color: green;
-      }
+    .fa-check-circle-o{
+      color: green;
+    }
 
-      .fa-remove {
-        color: red;
-      }
+    .fa-remove {
+      color: red;
+    }
 
-    </style>
+  </style>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    window.onload = function () {
+      // 소켓을 연결합니다.
+      var socket = io.connect();
+    };
+  </script>
 </head>
 <body>
 
