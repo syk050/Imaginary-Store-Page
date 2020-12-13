@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>21624118_김승연</title>
+    <style>
+        *{
+            box-sizing: border-box;
+            cursor: default;
+        }
+        body{
+            background-color: cornsilk;
+            text-align: center;
+        }
+        h1{
+            padding: 30px;
+            font-family: cursive;
+            color: black;
+            text-align: center;
+        }
+        .item_view_box{
+            display: inline-block;
+            text-align: left;
+            width: 85%;
+            height: 100%;
+        }
+        .item_list_view{
+            margin-bottom: 30px;
+        }
+
+        /* 신규 상품 */
+        .new_item_img{
+            width: 70%;
+            height: 100%;
+            background-color: burlywood;
+            text-align: center;
+            line-height:400px;
+            float: left; 
+        }
+        .info{
+            padding: 10px 20px;
+            display: inline-block;
+        }
+
+        /* 전체 상품 */
+        .total_item_list{
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 30px;
+        }
+        .total_item_img{
+            height: 100px;
+            line-height:100px;
+            text-align: center;
+            background-color: rgb(250, 200, 150);
+        }
+        .item{
+            margin: 5px;
+            border: solid 0.2px;
+            border-color: rgb(250, 200, 150);
+            text-align: right;
+        }
+        p{
+            margin: 0px;
+            padding: 4px 5px 0px 0px;
+        }
+
+        /* 카테고리 버튼 */
+        .top{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .category_buttons{
+            display: flex;
+        }
+        .category_button{
+            flex: 1;
+            border: none;
+            outline: none;
+            padding: 10px 16px;
+            background-color: #ffb3ae;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: bold;   
+        }
+        .category_button_active, 
+        .category_button:hover{
+            background-color: #ff9b93;
+        }
+
+        /* 아이템 상세 정보 */
+        * {box-sizing: border-box;}
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: #474e5d42;
+            padding-top: 50px;
+        }
+        
+        
+        /* 슬라이드 패널 */
+        .animation_canvas  {
+            overflow:hidden;
+            position:relative;
+            height:400px;
+        }
+        .slider_panel { 
+            position:relative;
+        }
+        .slider_image {
+            text-align: right;
+            background-color: rgb(240, 222, 142);
+            float:left; 
+            height:400px; 
+            font-size: 20px;
+        }
+        .button{
+            width: 50px;
+            height: 50px;
+            position: absolute;
+            text-align: center;
+            font-size: 30px;
+            opacity: 0.7;
+            top: 45%;
+            cursor: pointer;
+        }
+        #button_left{
+            left: 0%;
+        }
+        #button_right{
+            right: 0%;
+        }
+        b{
+            cursor: pointer;
+        }
+        .page{
+            position: absolute;
+            overflow:hidden;
+            width: 120px;
+            height: 10px;
+            top: 95%;
+        }
+        .page_button{
+            position: relative;
+            width: 20px;
+            height: 10px;
+            background-color:rgba(255, 255, 255, 0.2);
+            float:left;
+            cursor:pointer;
+        }
+        .page_button_active{
+            background-color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
+
+    <script src="http://code.jquery.com/jquery-3.1.1.js"></script>
+    <script>
+        // 신규 상품
+        $(document).ready(function(){
+            var now_width = 0;
+            // risize시 콘텐츠 사이즈 조정
+            function resizeContents(){
+                now_width = $('.animation_canvas').width();
+
+                $('.slider_image').css('width', now_width);
+                $('.slider_panel').css('width', now_width*6);
+
+                $('.page').css('left', (now_width - 120)/2);
+
+                fixContents();
+            }
+
+            // risize시 판넬 이동
+            function fixContents(){
+                $('.slider_panel').clearQueue();
+                moveSlider();
+            }
+
+            var index = 0;
+            function indexing(option){
+
+                if (option == 1){
+                    index++;
+                    if (index > 5){
+                        index = 0;
+                    }
+                }
+                else if(option == 0){
+                    index--;
+                    if (index < 0){
+                        index = 5;
+                    }
+                }
+
+                moveSlider();
+            }
+
+            // 슬라이드 이동
+            function moveSlider(){
+                var willMoveLeft = -(index * now_width);
+                $('.slider_panel').animate({ left: willMoveLeft }, 'slow');
+                fillPageButton();
+            }
+
+            // 버튼 색칠
+            function fillPageButton(){
+                $('.page_button[data_index=' + index + ']').addClass('page_button_active');
+                $('.page_button[data_index!=' + index + ']').removeClass('page_button_active');
+            }
+
+            // 신규 상품 아이템만큼 버튼 생성
+            $('.slider_image').each(function(i){
+                let temp = $('<div/>',{
+                    class : 'page_button',
+                    data_index : i
+                }).hover(function(){
+                    $(this).addClass('page_button_active');
+                }, function(){
+                    if($(this).attr('data_index') != index){
+                        $(this).removeClass('page_button_active');
+                    }
+                });
+
+                $(temp).on('click', function(){
+                    index = $(this).attr('data_index');
+
+                    moveSlider();
+                });
+                
+                $('.page').append(temp);
+            });
+
+            // 버튼 클릭 이벤트
+            $('.button').click(function(){
+                let button_id = $(this).attr('id');
+                console.log(button_id);
+
+                if(button_id == "button_left"){
+                    indexing(0);
+                }
+                else{
+                    indexing(1);
+                }
+            });
+
+            // 이벤트 등록
+            $(window).on('resize', function(){
+                resizeContents();
+            });
+            
+            // 초기 사이즈 설정
+            resizeContents();
+
+            $(window).on('click', function(e){
+                // if(e.target == $('.slider_image')[0]){
+                //     console.log(e.target);
+                // }
+                // else if(e.target.parentElement == $('.info')[0]){
+                //     console.log(e.target.parentElement.parentElement);
+                // }
+                // else{
+                //     console.log(e.target.parentElement)
+                // }
+                
+            });
+
+            // 슬라이드 이동 설정
+            // setInterval(function(){
+            //     indexing(1);
+            // }, 4000);
+        });
+
+        // 전체 상품
+        $(document).ready(function(){
+            // 카테고리 버튼 클릭시 활성화 효과
+            function fillCategoryButton(category){
+                $('.category_button[item_series=' + category + ']').addClass('category_button_active');
+                $('.category_button[item_series!=' + category + ']').removeClass('category_button_active');
+            }
+
+            // 카테고리 버튼 클릭시 해당 카테고리 보여줌
+            function showItem(category){
+                if(category != "all"){
+                    $('.item[item_series=' + category + ']').css('display', 'block');
+                    $('.item[item_series!=' + category + ']').css('display', 'none');
+                }
+                else{
+                    $('.item').each(function(){
+                        $(this).css('display', 'block');
+                    });
+                }
+            }
+
+            // 카테고리 버튼 이벤트 등록
+            $('.category_button').each(function(){
+                $(this).on('click', function(){
+                    var category = $(this).attr('item_series');
+                    fillCategoryButton(category);
+                    showItem(category);
+                });
+            });
+
+            // 카테고리 버튼 전체로 초기화
+            $('.category_button').eq(0).trigger('click');
+
+            // 아이템 클릭시 상품 설명 창 띄움
+            $('.item').each(function(){
+                $(this).on('click', function(){
+                    $('.modal').empty();
+
+                    var url = '/item/' + $(this).attr('item_id');
+                    $.get(url, function(data){
+                        $('.modal').append(data);
+                    });        
+                    $('.modal').css('display', 'block');
+                });
+            });
+
+            // 상품 설명 창 밖에 클릭시 창 닫기
+            $(window).on('click', function(e){
+                if (e.target == $('.modal')[0]){
+                    $('.modal').css('display', 'none');
+                }
+            });
+
+        });
+    </script>
+</head>
+<body>
+    <h1>Market</h1>
+    <div class="item_view_box">
+        <!-- 신규 상품 -->
+        <div class="item_list_view">
+            <h3>신규 상품</h3>
+
+            <div class="new_item_list animation_canvas">
+                <div class="slider_panel">
+                    <% newdata.forEach(function (item, index){ %>
+                    <div class="slider_image" item_id="<%= item.id %>">
+                        <div class="new_item_img"><%=item.name%></div>
+                        <div class="info">
+                            <p><%=item.name%></p>
+                            <p><%=item.series%></p>
+                        </div>
+                    </div>
+                    <% }); %>
+                </div>
+
+                <div class="button" id="button_left">
+                    <b><</b>
+                </div>
+                <div class="button" id="button_right">
+                    <b>></b>
+                </div>
+
+                <div class="page">
+                </div>
+            </div> 
+        </div>
+
+        <!-- 전체 상품 -->
+        <div class="item_list_view ">
+
+            <!-- 상단 제목, 버튼 -->
+            <div class="top">
+                <h3>전체 상품</h3>
+                <div class="category_buttons">
+                    <button class="category_button" item_series="all">전체</button>
+                    <% category.forEach(function (item, index){ %>
+                        <button class="category_button" item_series="<%=item.series%>"><%=item.series%></button>
+                    <% }); %>
+                </div>
+            </div>
+
+            <!-- 전체 아이템 -->
+            <div class="total_item_list">
+                <% data.forEach(function (item, index){ %>
+                <div class="item" item_id="<%= item.id %>" item_series="<%=item.series%>">
+                    <div class="total_item_img"><%=item.name%></div>
+                    <p><%=item.name%></p>
+                    <p><%=item.series%></p>
+                </div>
+                <% }); %>
+            </div>
+        </div>
+
+        <!-- 상품 설명 창 -->
+        <div class="modal">
+            
+        </div>
+    </div>
+</body>
+</html>

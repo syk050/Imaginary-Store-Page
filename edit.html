@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>    
+<head>  
+  <title>Edit Page</title>  
+  <style>
+    *{box-sizing: border-box;}
+    .item_edit{
+      max-width: 350px;
+      padding: 10px;
+      background-color: white;
+    }
+    .item_edit input[type=text]{
+      width: 100%;
+      padding: 15px;
+      margin: 5px 0 22px 0;
+      border: none;
+      background: #f1f1f1;
+    }
+    .item_edit input[type=text]:focus{
+      background-color: #ddd;
+      outline: none;
+    }
+    .item_edit button{
+      background-color: #4CAF50;
+      color: white;
+      padding: 16px 20px;
+      border: none;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom:10px;
+      opacity: 0.8;
+    }
+    .item_edit .popup_cancel_button{
+      background-color: red;
+    }
+    .item_edit button:hover{
+      opacity: 1;
+    }
+  </style>
+
+  <script src="http://code.jquery.com/jquery-3.1.1.js"></script>
+  <script>
+    $(document).ready(function(){
+      $('.item_edit').submit(function(e){
+        var data = $(this).serializeArray();
+        
+        var id = data[0].value;
+        $.post('/edit/'+id, data, function(){
+          location.reload();
+        });
+
+        $('.edit_popup').css('display', 'none');
+
+        e.preventDefault();
+      });
+
+      $('.popup_cancel_button').on('click', function(){
+        $('.edit_popup').css('display', 'none');
+      });
+    });
+  </script>
+</head>
+<body>
+  <form class="item_edit">
+      <h2>상품 수정</h2>
+      <label><b>Id</b></label>
+      <input type="text" name="id" value="<%= data.id%>" readonly>
+
+      <label><b>Name</b></label>
+      <input type="text" placeholder="상품 이름" name="name" value="<%= data.name %>" required>
+
+      <label><b>Model Number</b></label>
+      <input type="text" placeholder="상품 모델 번호" name="model_number" value="<%= data.modelnumber %>" required>
+
+      <label><b>Series</b></label>
+      <input type="text" placeholder="상품 분류" name="series" value="<%= data.series %>" required>
+
+      <button type="submit" class="btn">Submit</button>
+      <button type="button" class="popup_cancel_button">Cancel</button>
+  </form>
+</body>
+</html>

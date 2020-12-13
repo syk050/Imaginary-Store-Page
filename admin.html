@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Admin Page</title>
+
+  <style>
+    body{
+      text-align: center;
+    }
+    h1{
+      margin: 30px;
+    }
+    .layer{
+      display: inline-block;
+      width: 90%;
+    }
+
+    /* 메뉴 버튼 CSS */
+    .menu_line{
+      background-color: #f1f1f1;
+      /* width: 60%; */
+      width: 720px;
+      display: inline-block;
+      border-radius: 7px 7px 0px 0px;
+    }
+    .menu_buttons{
+      display: flex;
+    }
+    .menu_button{
+      padding: 10px 20px;
+      width: 240px;
+      font-size: 27px;
+      background-color: #f1f1f1;
+      border-radius: 7px 7px 0px 0px;
+    }
+    .menu_button_active, .menu_button:hover{
+      background-color: #666666;
+      color: white;
+      border-radius: 7px 7px 0px 0px;
+    }
+
+    /* 수평선 */
+    hr{
+      margin-top: 0px;
+      margin-bottom: 20px;
+      border: 0px;
+      height: 10px;
+      background-color:#666666;
+      border-radius: 5px;
+    }
+
+    /* 상품 목록 CSS */
+    .item_list table{
+      border-collapse: collapse;
+      border-spacing: 0;
+      width: 100%;
+      border: 1px solid #ddd;
+    }
+    .item_list th, td{
+      text-align: center;
+      padding: 16px;
+    }
+    .item_list tr:nth-child(even){
+      background-color: #f2f2f2;
+    }
+    .item_edit_open {
+      background-color: #555;
+      color: white;
+      padding: 5px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      opacity: 0.8;
+      width: 60px;
+    }
+    .item_edit_open:hover{
+      opacity: 1;
+    }
+    .item_delete{
+      background-color: #f33;
+      color: white;
+      padding: 5px;
+      font-size: 16px;
+      border: none;
+      cursor: pointer;
+      opacity: 0.8;
+      width: 60px;
+    }
+    .item_delete:hover{
+      opacity: 1;
+    }
+    .edit_popup{
+      display: none;
+      position: fixed;
+      bottom: 0;
+      right: 15px;
+      border: 3px solid #f1f1f1;
+      z-index: 9;
+    }
+
+    /* 상품 추가 CSS */
+    *{ box-sizing: border-box; }
+    form {
+      border: 3px solid #f1f1f1;
+      text-align: left;
+    }
+    .modal input[type=text]{
+      width: 100%;
+      padding: 12px;
+      margin: 5px 0 22px 0;
+      display: inline-block;
+      border: none;
+      background: #f1f1f1;
+    }
+    .modal input[type=text]:focus{
+      background-color: #ddd;
+      outline: none;
+    }
+    .modal button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 14px 20px;
+      margin: 8px 0;
+      border: none;
+      cursor: pointer;
+      float: left;
+      width: 50%;
+    }
+    .modal button:hover {
+      opacity: 0.8;
+    }
+    .modal .modal_cancel_button {
+      background-color: #f44336;
+    }
+    .modal_content{
+      padding: 16px;
+    }
+    .modal{
+      display: none;
+      position: fixed;
+      z-index: 9;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background: #474e5da9;
+      padding-top: 50px;
+    }
+    .item_insert{
+      background-color: #fefefe;
+      margin: 5% auto 15% auto;
+      border: 1px solid #888;
+      width: 80%;
+    }
+    .modal_close_button{
+      position: absolute;
+      right: 35px;
+      top: 15px;
+      font-size: 40px;
+      font-weight: bold;
+      color: #f1f1f1;
+      margin: 0px;
+    }
+    .modal_close_button:hover, .modal_close_button:focus {
+      color: #f44336;
+      cursor: pointer;
+    }
+    .modal_hr{
+      all: revert;
+      border: 1px solid #f1f1f1;
+      margin-bottom: 25px;
+    }
+    .floor::after {
+      content: "";
+      clear: both;
+      display: table;
+    }
+
+  </style>
+
+  <script src="http://code.jquery.com/jquery-3.1.1.js"></script>
+  <script>
+    // menu_button
+    $(document).ready(function(){
+      // 선택되어 있는 버튼 인덱스
+      var selected_button = 0
+
+      // menu_button 클릭시 버튼 색칠
+      function fillMenuButton(index){
+        selected_button = index;
+        $('.menu_button[index=' + index + ']').addClass('menu_button_active');
+        $('.menu_button[index!=' + index + ']').removeClass('menu_button_active');
+      }
+
+      // menu_button 클릭시 액션
+      function actionMenuButton(index){
+        $('.tab_content[index=' + index + ']').css('display', 'block');
+        $('.tab_content[index!=' + index + ']').css('display', 'none');
+
+        if (index == 0) funItemList();
+        else if (index == 1) funItemManagement();
+        else funItemInsert();
+      }
+
+      // 상품 목록 버튼 클릭시
+      function funItemList(){}
+
+      // 상품 관리 버튼 클릭시
+      function funItemManagement(){
+        $('.item_management').empty();
+
+        var url = '/manage';
+        $.get(url, function(data){
+          $('.item_management').append(data);
+        });
+        // $('.item_management').load(url);
+      }
+
+      // 상품 추가 버튼 클릭시
+      function funItemInsert(){
+        $('.modal').css('display', 'block');
+      }
+      
+      // menu_button 이벤트 등록
+      $('.menu_button').each( function(index){
+        $(this).attr('index', index)
+        
+        $(this).on('click', function(){
+          fillMenuButton($(this).attr('index'));
+
+          actionMenuButton($(this).attr('index'));
+        });
+      });
+
+      // 탭 메뉴 내용 속성 추가
+      $('.tab_content').each(function(index){
+        $(this).attr('index', index);
+      });
+
+      // 초기 메뉴 버튼 클릭
+      $('.menu_button').eq(0).trigger('click');
+    });
+
+    // modal
+    $(document).ready(function(){
+      // 크롬 양식 다시 제출 막기
+      function formResubmitBlock(url){
+        window.location.replace(url);
+      }
+      
+      // modal_content 밖에 클릭시 이벤트 설정
+      $(window).on('click', function(e){
+        if (e.target == $('.modal')[0]){
+          $('.modal').css('display', 'none');
+
+          formResubmitBlock(window.location.href)
+        }
+      });
+
+      // modal cancel_button 클릭 이벤트 등록
+      $('.cancel_button').on('click', function(e){
+        e.stopPropagation();
+        $('.modal').css('display', 'none');
+
+        formResubmitBlock(window.location.href)
+      });
+
+      // modal close_button 클릭 이벤트 등록
+      $('.modal_close_button').on('click', function(e){
+        e.stopPropagation();
+        $('.modal').css('display', 'none');
+
+        formResubmitBlock(window.location.href)
+      });
+
+    });
+    
+    // 상품 관리탭 내부
+    $(document).ready(function(){
+      // item_edit 클릭시
+      $('.item_edit_open').on('click', function(){
+        $('.edit_popup').empty();
+        $('.edit_popup').css('display', 'block');
+
+        var url = '/edit/' + $(this).attr('item_id');
+        $.get(url, function(data){
+          $('.edit_popup').append(data);
+        });
+      });
+
+      // item_delete 클릭시 
+      $('.item_delete').on('click', function(){
+        var url = '/delete/'+$(this).attr('item_id');
+        window.location.replace(url);
+      });
+    });
+  </script>
+
+</head>
+<body>
+  <div class="layer">
+    <h1>Admin Page</h1>
+
+    <div class="menu_line">
+      <div class="menu_buttons">
+        <div class="menu_button">상품 목록</div>
+        <div class="menu_button">상품 관리</div>
+        <div class="menu_button">상품 추가</div>
+
+        <!-- <a class="menu_button" href="/insert"></a> -->
+      </div>
+    </div>
+    <hr/>
+
+    <div class="tab_content">
+      <div class="item_list">
+        <table>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Model Number</th>
+            <th>Series</th>
+            <th>EDIT</th>
+            <th>DELETE</th>
+          </tr>
+          <% data.forEach(function (item, index) { %>
+          <tr>
+            <td><%= item.id %></td>
+            <td><%= item.name %></td>
+            <td><%= item.modelnumber %></td>
+            <td><%= item.series %></td>
+            <td><input type="button" class="item_edit_open" item_id="<%= item.id %>" value="Edit"></td>
+            <td><input type="button" class="item_delete" item_id="<%= item.id %>" value="Delete"></td>
+          </tr>
+          <% }); %>
+        </table>
+      </div>
+      <div class="edit_popup">
+      </div>
+    </div>
+
+    <div class="tab_content">
+      <div class="item_management">
+
+      </div>
+    </div>
+
+    <div class="modal">
+      <p class="modal_close_button">x</p>
+      <form class="item_insert" method="POST">
+        <div class="modal_content">
+          <h2>상품 추가</h2>
+          <p>상품을 추가하시려면 이 양식을 작성하십시오.</p>
+          <hr class="modal_hr"/>
+          <label><b>Name</b></label>
+          <input type="text" placeholder="상품 이름" name="name" required>
+  
+          <label><b>Model Number</b></label>
+          <input type="text" placeholder="상품 모델 번호" name="model_number" required>
+  
+          <label><b>Series</b></label>
+          <input type="text" placeholder="상품 분류" name="series" required>
+  
+          <div class="floor">
+            <button type="submit">Submit</button>
+            <button class="modal_cancel_button">Cancel</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</body>
+</html>
