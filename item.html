@@ -81,6 +81,12 @@
         $('.modal_close').on('click', function(){
             $('.modal').css('display', 'none');
         });
+
+        $('.item_buy_button').submit(function(e){
+            
+
+            e.preventDefault();
+        });
     })
 </script>
 
@@ -95,7 +101,7 @@
             <p><%= data.name%></p>
             <p><%= data.series%></p>
             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur volutpat faucibus egestas. Nunc dignissim, eros laoreet interdum dictum, odio justo facilisis purus, nec consectetur mi sem non nibh. Integer tempor tincidunt mi. Vestibulum ex dolor, venenatis iaculis pellentesque eget, dictum vitae enim. Cras laoreet convallis rhoncus. Nam dapibus nisl eu risus gravida convallis</p>
-            <button>구매</button>
+            <button type="submit" class="item_buy_button">구매</button>
         </div>
     </div>
     
