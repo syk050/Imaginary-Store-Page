@@ -228,7 +228,7 @@
       function funItemManagement(){
         $('.signal').css('display', 'none');
         $('.signal').text(0)
-        
+
         $('.item_management').empty();
 
         var url = '/manage';
@@ -321,17 +321,53 @@
   <script src="/socket.io/socket.io.js"></script>
   <script>
     window.onload = function(){
-        var socket = io.connect();
-    
-        socket.on('itemBuyRequest', function(){
-            console.log('In itemBuyRequest');
+      var socket = io.connect();
+  
+      // 구매 요청이 왔을 때
+      socket.on('itemBuySignal', function(){
+          console.log('In itemBuyRequest');
 
-            var count = parseInt($('.signal').text());
-            $('.signal').text(count+1);
+          var count = parseInt($('.signal').text());
+          $('.signal').text(count+1);
 
-            alert('구매 요청이 들어왔습니다.');
-            $('.signal').css('display', 'block');
-        });
+          alert('구매 요청이 들어왔습니다.');
+          $('.signal').css('display', 'block');
+      });
+
+      // 상품 관리 버튼 클릭
+      $(window).on('click', function(e){
+        console.log(e.target);
+
+        // 구매 취소 버튼
+        if (e.target == $('.fa-remove')[0]){
+          var id = $('.fa-remove').attr('item_id');
+
+          socket.emit('itemCancel', id);
+        }
+        // 구매 수락 버튼
+        else if(e.target == $('.fa-circle-o')[0]){
+          var id =  $('.fa-circle-o').attr('item_id');
+
+          socket.emit('itemPermit', id);
+        }
+
+      });
+
+      // 상품 취소 완료
+      socket.on('itemCancelSignal', function(data){
+        alert(data + '번 상품이 취소 됐습니다.')
+        // window.location.reload();
+        $('.menu_button').eq(1).trigger('click');
+      });
+
+      // 상품 구매 수락 완료
+      socket.on('itemPermitSignal', function(data){
+        $('fa-circle-o[item_id=' + data + ']').removeClass('fa-circle-o');
+        $('fa-circle-o[item_id=' + data + ']').addClass('fa-check-circle-o');
+        // window.location.reload();
+        $('.menu_button').eq(1).trigger('click');
+      });
+
     }
   </script>
 </head>

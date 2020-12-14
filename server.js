@@ -157,7 +157,12 @@ app.post('/edit/:id', function (request, response) {
 // 상품 관리 페이지
 app.get('/manage', function(request, response){
   fs.readFile('manage.html', 'utf8', function (error, data) {
-    response.send(data);
+    client.query('SELECT * FROM customer', function(error, result){
+      response.send(ejs.render(data, {
+        data: result
+      }));
+    });
+
   });
 });
 
@@ -212,7 +217,8 @@ app.get('/__!truncate_products__', function(request, response){
 
 io.sockets.on('connection', function(socket){
   console.log('io connection');
-  // 구매시
+
+  // 소비자가 상품 구매
   socket.on('itemBuy', function(data){
     console.log('itemBuy : ' + data);
 
@@ -223,11 +229,40 @@ io.sockets.on('connection', function(socket){
         console.log(error);
       }
       else{
-        io.sockets.emit('itemBuyRequest');
+        io.sockets.emit('itemBuySignal');
       }
     });
   });
 
+  // 관리자가 상품 구매 취소
+  socket.on('itemCancel', function(data){
+    console.log('itemCancel' + data);
+
+    client.query('DELETE FROM customer WHERE id = ?', [
+      data
+    ], function(error, result){
+      if(error){
+        console.log(error);
+      }else{
+        io.sockets.emit('itemCancelSignal', data);
+      }
+    });
+  });
+
+  // 관리자가 상품 구매 수락
+  socket.on('itemPermit', function(data){
+    console.log('itemPermit : ' + data);
+
+    client.query('UPDATE customer SET status = 1 WHERE id = ?', [
+      data
+    ], function(error, result){
+      if(error){
+        console.log(error);
+      }else{
+        io.sockets.emit('itemPermitSignal', data);
+      }
+    })
+  });
 
 });
 

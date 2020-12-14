@@ -275,19 +275,6 @@
             // 초기 사이즈 설정
             resizeContents();
 
-            $(window).on('click', function(e){
-                // if(e.target == $('.slider_image')[0]){
-                //     console.log(e.target);
-                // }
-                // else if(e.target.parentElement == $('.info')[0]){
-                //     console.log(e.target.parentElement.parentElement);
-                // }
-                // else{
-                //     console.log(e.target.parentElement)
-                // }
-                
-            });
-
             // 슬라이드 이동 설정
             // setInterval(function(){
             //     indexing(1);
@@ -355,9 +342,9 @@
         window.onload = function(){
             var socket = io.connect();
     
-            // 구매 버튼을 클릭시
+            // 구매 버튼을 클릭 시
             $(window).on('click', function(e){
-                console.log(e.target);
+                // console.log(e.target);
 
                 if (e.target == $('.item_buy_button')[0]){
                     $('.modal').css('display', 'none');
@@ -365,14 +352,30 @@
                     socket.emit('itemBuy', $('.item_buy_button').attr('item_id'));
                 }
             });
-        
-            socket.on('itemBuyRequest', function(){
+            
+            // 상품 구매 완료 시
+            socket.on('itemBuySignal', function(){
                 console.log('In itemBuyRequest');
 
                 alert('상품이 담겼습니다.')
                 var count = parseInt($('.mypage').text());
                 $('.mypage').text(count+1);
+            });
 
+            // 상품 구매 취소 당했을 때
+            socket.on('itemCancelSignal', function(data){
+                alert(data + '번 상품이 취소 됐습니다.');
+
+                var count = parseInt($('.mypage').text());
+                $('.mypage').text(count-1);
+                // window.location.reload();
+            });
+
+            // 상품 구매가 수락 되었을 때
+            socket.on('itemPermitSignal', function(data){
+                alert(data + '번 상품이 구매 되었습니다.');
+                var count = parseInt($('.mypage').text());
+                $('.mypage').text(count-1);
             });
         }
     </script>

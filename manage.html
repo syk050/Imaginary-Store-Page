@@ -16,11 +16,6 @@
       padding: 16px;
     }
 
-    .item_management_table th:first-child, 
-    .item_management_table td:first-child {
-      text-align: left;
-    }
-
     .item_management_table tr:nth-child(even) {
       background-color: #f2f2f2
     }
@@ -40,56 +35,28 @@
     .fa-remove {
       color: red;
     }
-
   </style>
 
-  <script src="http://code.jquery.com/jquery-3.1.1.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
-  <script>
-    window.onload = function () {
-      // 소켓을 연결합니다.
-      var socket = io.connect();
-
-      socket.on('itemBuyRequest', function(){
-        
-      });
-
-    };
-  </script>
 </head>
 <body>
 
 <table class="item_management_table">
   <tr>
-    <th style="width: 45%;">Features</th>
-    <th style="width: 20%;">상태</th>
-    <th style="width: 15%;">판매</th>
-    <th style="width: 20%;">취소</th>
+    <th>Id</th>
+    <th>Name</th>
+    <th>상태</th>
+    <th>판매</th>
+    <th>취소</th>
   </tr>
-  <!-- <tr>
-    <td>Sample text</td>
-    <td>구매 요청 대기</td>
-    <td><i class="fa fa-circle-o"></i></td>
-    <td><i class="fa fa-remove"></i></td>
-  </tr>
-  <tr>
-    <td>Sample text</td>
-    <td>구매 요청 대기</td>
-    <td><i class="fa fa-circle-o"></i></td>
-    <td><i class="fa fa-remove"></i></td>
-  </tr>
-  <tr>
-    <td>Sample text</td>
-    <td>판매 완료</td>
-    <td><i class="fa fa-check-circle-o"></i></td>
-    <td><i class="fa fa-remove"></i></td>
-  </tr>
-  <tr>
-    <td>Sample text</td>
-    <td>판매 완료</td>
-    <td><i class="fa fa-check-circle-o"></i></td>
-    <td><i class="fa fa-remove"></i></td>
-  </tr> -->
+  <% data.forEach(function(item, index){ %>
+    <tr item_id="<%= item.id %>">
+      <td><%= item.id %></td>
+      <td><%= item.name %></td>
+      <td><%= item.status %></td>
+      <td><i class="fa fa-circle-o" item_id="<%= item.id %>"></td>
+      <td><i class="fa fa-remove" item_id="<%= item.id %>"></td>
+    </tr>
+  <% }); %>
 </table>
 
 </body>
