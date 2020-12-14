@@ -22,6 +22,7 @@ app.use(bodyParser.urlencoded({  extended: false   }));
 // 서버 실행
 server.listen(52273, function () {
   console.log('server running at http://127.0.0.1:52273');
+  client.query('truncate customer')
 });
 
 // 일단 소비자 화면
@@ -69,7 +70,7 @@ app.get('/customer', function (request, response) {
 
 // 아이템 상세 설명 창
 app.get('/item/:id', function(request, response){
-  console.log('In GET item :' + request.params.id);
+  console.log('In GET item : ' + request.params.id);
 
   fs.readFile('item.html', 'utf-8', function(error, data){
     client.query('SELECT * FROM products WHERE id = ?', [
@@ -208,3 +209,25 @@ app.get('/__!truncate_products__', function(request, response){
     response.redirect('/admin');
   });
 });
+
+io.sockets.on('connection', function(socket){
+  console.log('io connection');
+  // 구매시
+  socket.on('itemBuy', function(data){
+    console.log('itemBuy : ' + data);
+
+    client.query('INSERT INTO customer (id, name, modelnumber, series) SELECT * FROM products WHERE id = ?', [
+      data
+    ], function(error, result){
+      if (error){
+        console.log(error);
+      }
+      else{
+        io.sockets.emit('itemBuyRequest');
+      }
+    });
+  });
+
+
+});
+

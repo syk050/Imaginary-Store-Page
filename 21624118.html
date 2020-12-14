@@ -9,7 +9,7 @@
             cursor: default;
         }
         body{
-            background-color: cornsilk;
+            background-color: #fff5c0;
             text-align: center;
         }
         h1{
@@ -23,16 +23,32 @@
             text-align: left;
             width: 85%;
             height: 100%;
+            position: relative;
         }
         .item_list_view{
             margin-bottom: 30px;
+        }
+        .mypage{
+            all: revert;
+            position: absolute;
+            top: -110px;
+            right: 0px;
+            width: 40px;
+            height: 40px;
+            background: #ff5a5a;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 18px;
+            line-height: 38px;
+            color: white;
+            font-weight: bold;
         }
 
         /* 신규 상품 */
         .new_item_img{
             width: 70%;
             height: 100%;
-            background-color: burlywood;
+            background-color: #ffb396;
             text-align: center;
             line-height:400px;
             float: left; 
@@ -52,12 +68,12 @@
             height: 100px;
             line-height:100px;
             text-align: center;
-            background-color: rgb(250, 200, 150);
+            background-color: #ffb386;
         }
         .item{
             margin: 5px;
             border: solid 0.2px;
-            border-color: rgb(250, 200, 150);
+            border-color: #ffb386;
             text-align: right;
         }
         p{
@@ -117,7 +133,7 @@
         }
         .slider_image {
             text-align: right;
-            background-color: rgb(240, 222, 142);
+            background-color: #ffe5b9;
             float:left; 
             height:400px; 
             font-size: 20px;
@@ -333,10 +349,40 @@
 
         });
     </script>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        window.onload = function(){
+            var socket = io.connect();
+    
+            // 구매 버튼을 클릭시
+            $(window).on('click', function(e){
+                console.log(e.target);
+
+                if (e.target == $('.item_buy_button')[0]){
+                    $('.modal').css('display', 'none');
+
+                    socket.emit('itemBuy', $('.item_buy_button').attr('item_id'));
+                }
+            });
+        
+            socket.on('itemBuyRequest', function(){
+                console.log('In itemBuyRequest');
+
+                alert('상품이 담겼습니다.')
+                var count = parseInt($('.mypage').text());
+                $('.mypage').text(count+1);
+
+            });
+        }
+    </script>
+
 </head>
 <body>
     <h1>Market</h1>
+
     <div class="item_view_box">
+        <p class="mypage">0</p>
         <!-- 신규 상품 -->
         <div class="item_list_view">
             <h3>신규 상품</h3>

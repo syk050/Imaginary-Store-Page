@@ -33,11 +33,28 @@
       font-size: 27px;
       background-color: #f1f1f1;
       border-radius: 7px 7px 0px 0px;
+      position: relative;
     }
     .menu_button_active, .menu_button:hover{
       background-color: #666666;
       color: white;
       border-radius: 7px 7px 0px 0px;
+    }
+    .signal{
+      all: revert;
+      display: none;
+      position: absolute;
+      top: -30px;
+      right: 30px;
+      width: 40px;
+      height: 40px;
+      background: #ff5a5a;
+      border-radius: 50%;
+      text-align: center;
+      font-size: 18px;
+      line-height: 38px;
+      color: white;
+      font-weight: bold;
     }
 
     /* 수평선 */
@@ -209,6 +226,9 @@
 
       // 상품 관리 버튼 클릭시
       function funItemManagement(){
+        $('.signal').css('display', 'none');
+        $('.signal').text(0)
+        
         $('.item_management').empty();
 
         var url = '/manage';
@@ -298,6 +318,22 @@
     });
   </script>
 
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    window.onload = function(){
+        var socket = io.connect();
+    
+        socket.on('itemBuyRequest', function(){
+            console.log('In itemBuyRequest');
+
+            var count = parseInt($('.signal').text());
+            $('.signal').text(count+1);
+
+            alert('구매 요청이 들어왔습니다.');
+            $('.signal').css('display', 'block');
+        });
+    }
+  </script>
 </head>
 <body>
   <div class="layer">
@@ -306,7 +342,9 @@
     <div class="menu_line">
       <div class="menu_buttons">
         <div class="menu_button">상품 목록</div>
-        <div class="menu_button">상품 관리</div>
+        <div class="menu_button">상품 관리
+          <p class="signal">0</p>
+        </div>
         <div class="menu_button">상품 추가</div>
 
         <!-- <a class="menu_button" href="/insert"></a> -->
