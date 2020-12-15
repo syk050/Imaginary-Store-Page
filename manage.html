@@ -52,9 +52,16 @@
     <tr item_id="<%= item.id %>">
       <td><%= item.id %></td>
       <td><%= item.name %></td>
-      <td><%= item.status %></td>
-      <td><i class="fa fa-circle-o" item_id="<%= item.id %>"></td>
-      <td><i class="fa fa-remove" item_id="<%= item.id %>"></td>
+      <% if (item.status == 0) { %>
+        <td>구매 요청 대기중</td>
+        <td><i class="fa fa-circle-o" item_id="<%= item.id %>"></td>
+        <td><i class="fa fa-remove" item_id="<%= item.id %>"></td>
+      <% }else{ %>
+        <td>구매 요청 수락</td>
+        <td><i class="fa fa-check-circle-o" item_id="<%= item.id %>"></td>
+        <td></td>
+      <% } %>
+      
     </tr>
   <% }); %>
 </table>

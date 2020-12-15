@@ -87,15 +87,17 @@ app.get('/item/:id', function(request, response){
 app.get('/admin', function (request, response) {
   console.log('In admin');
 
-  // let session = request.session;
-
-  // 파일을 읽습니다.
   fs.readFile('admin.html', 'utf8', function (error, data) {
-    // 데이터베이스 쿼리를 실행합니다.
+    var series;
+
+    client.query('SELECT DISTINCT series FROM products', function(error, result){
+      series=result;
+    });
+
     client.query('SELECT * FROM products', function (error, results) {
-      // 응답합니다.
       response.send(ejs.render(data, {
-        data: results
+        data: results,
+        category: series
       }));
     });
   });
@@ -238,7 +240,7 @@ io.sockets.on('connection', function(socket){
   socket.on('itemCancel', function(data){
     console.log('itemCancel' + data);
 
-    client.query('DELETE FROM customer WHERE id = ?', [
+    client.query('UPDATE customer SET status = -1 WHERE id = ?', [
       data
     ], function(error, result){
       if(error){
