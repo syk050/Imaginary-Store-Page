@@ -56,9 +56,13 @@
         <td>구매 요청 대기중</td>
         <td><i class="fa fa-circle-o" item_id="<%= item.id %>"></td>
         <td><i class="fa fa-remove" item_id="<%= item.id %>"></td>
+      <% }else if (item.status == -1){ %>
+        <td>구매 요청 취소</td>
+        <td></td>
+        <td><i class="fa fa-remove" item_id="<%= item.id %>"></i></td>
       <% }else{ %>
-        <td>구매 요청 수락</td>
-        <td><i class="fa fa-check-circle-o" item_id="<%= item.id %>"></td>
+        <td>구매 요청 취소</td>
+        <td><i class="fa fa-check-circle-o" item_id="<%= item.id %>"></i></td>
         <td></td>
       <% } %>
       
