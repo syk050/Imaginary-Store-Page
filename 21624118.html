@@ -232,6 +232,19 @@
                 $('.page_button[data_index!=' + index + ']').removeClass('page_button_active');
             }
 
+            // 신규 상품 클릭시 상세 정보 띄우기
+            $('.slider_image').each(function(){
+                $(this).on('click', function(){
+                    $('.modal').empty();
+
+                    var url = '/item/' + $(this).attr('item_id');
+                    $.get(url, function(data){
+                        $('.modal').append(data);
+                    });        
+                    $('.modal').css('display', 'block');
+                });
+            });
+            
             // 신규 상품 아이템만큼 버튼 생성
             $('.slider_image').each(function(i){
                 let temp = $('<div/>',{
@@ -276,9 +289,9 @@
             resizeContents();
 
             // 슬라이드 이동 설정
-            // setInterval(function(){
-            //     indexing(1);
-            // }, 4000);
+            setInterval(function(){
+                indexing(1);
+            }, 4000);
         });
 
         // 전체 상품
