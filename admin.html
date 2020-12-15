@@ -354,9 +354,17 @@
     
     // 상품 목록 내부
     $(document).ready(function(){
+      // 카테고리 버튼 클릭시 활성화 효과
+      function fillCategoryButton(category){
+        $('.category_button[item_series=' + category + ']').addClass('category_button_active');
+        $('.category_button[item_series!=' + category + ']').removeClass('category_button_active');
+      }
+
       // 카테고리 버튼 클릭시
       $('.category_button').on('click', function(){
         var category = $(this).attr('item_series');
+
+        fillCategoryButton(category);
         
         if(category == 'all'){
           $('tr').css('display', 'table-row');
@@ -377,6 +385,7 @@
         });
       });
 
+      $('.category_button').eq(0).trigger('click');
     });
 
     // 상품 관리탭 내부
