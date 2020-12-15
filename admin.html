@@ -423,12 +423,11 @@
 
           alert('구매 요청이 들어왔습니다.');
           $('.signal').css('display', 'block');
+          $('.menu_button').eq(1).trigger('click');
       });
 
       // 상품 관리 버튼 클릭
       $(window).on('click', function(e){
-        console.log(e.target);
-
         // 구매 취소 버튼
         if (e.target == $('.fa-remove')[0]){
           var id = $('.fa-remove').attr('item_id');
@@ -446,15 +445,15 @@
 
       // 상품 취소 완료
       socket.on('itemCancelSignal', function(data){
-        alert(data + '번 상품이 취소 됐습니다.')
+        alert(data.id + ' ' + data.name + '상품을 취소 했습니다.');
         // window.location.reload();
         $('.menu_button').eq(1).trigger('click');
       });
 
       // 상품 구매 수락 완료
       socket.on('itemPermitSignal', function(data){
-        $('fa-circle-o[item_id=' + data + ']').removeClass('fa-circle-o');
-        $('fa-circle-o[item_id=' + data + ']').addClass('fa-check-circle-o');
+        $('fa-circle-o[item_id=' + data.id + ']').removeClass('fa-circle-o');
+        $('fa-circle-o[item_id=' + data.id + ']').addClass('fa-check-circle-o');
         // window.location.reload();
         $('.menu_button').eq(1).trigger('click');
       });

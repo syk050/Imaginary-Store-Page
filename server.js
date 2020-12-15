@@ -246,7 +246,11 @@ io.sockets.on('connection', function(socket){
       if(error){
         console.log(error);
       }else{
-        io.sockets.emit('itemCancelSignal', data);
+        client.query('SELECT * FROM customer WHERE id = ?', [
+          data
+        ], function(error, result){
+          io.sockets.emit('itemCancelSignal', result[0]);
+        });
       }
     });
   });
@@ -261,7 +265,11 @@ io.sockets.on('connection', function(socket){
       if(error){
         console.log(error);
       }else{
-        io.sockets.emit('itemPermitSignal', data);
+        client.query('SELECT * FROM customer WHERE id = ?', [
+          data
+        ], function(error, result){
+          io.sockets.emit('itemPermitSignal', result[0]);
+        });
       }
     })
   });

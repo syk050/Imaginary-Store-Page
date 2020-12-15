@@ -377,7 +377,7 @@
 
             // 상품 구매 취소 당했을 때
             socket.on('itemCancelSignal', function(data){
-                alert(data + '번 상품이 취소 됐습니다.');
+                alert(data.series + '에 ' + data.name + '의 상품이 취소 됐습니다.');
 
                 var count = parseInt($('.mypage').text());
                 $('.mypage').text(count-1);
@@ -386,7 +386,8 @@
 
             // 상품 구매가 수락 되었을 때
             socket.on('itemPermitSignal', function(data){
-                alert(data + '번 상품이 구매 되었습니다.');
+                alert(data.series + '에 ' + data.name + '의 상품이 구매 되었습니다.');
+
                 var count = parseInt($('.mypage').text());
                 $('.mypage').text(count-1);
             });
