@@ -135,14 +135,14 @@
       border: none;
       outline: none;
       padding: 12px 16px;
-      background-color: #939bac;
+      background-color: unset;
       cursor: pointer;
       font-size: 15px;
       font-weight: bold;   
     }
     .category_button_active, 
     .category_button:hover{
-      background-color: #5c6e91;
+      background-color: whitesmoke;
     }
     .search input[type=text] {
       float: left;
@@ -248,6 +248,44 @@
       content: "";
       clear: both;
       display: table;
+    }
+
+    /* 알림 창 */
+    .bottom{
+      position: fixed;
+      bottom: 0;
+    }
+    .alert {
+      display: none;
+      padding: 20px;
+      color: white;
+      margin-bottom: 15px;
+      left: 15px;
+      z-index: 9;
+      border-radius: 5px;
+      max-width: 510px;
+    }
+    .alert.cancel{
+      background-color: #ff9800;
+    }
+    .alert.permit{
+      background-color: #4CAF50;
+    }
+    .alert.success{
+      background-color: #2196F3;
+    }
+    .closebtn {
+      margin-left: 15px;
+      color: white;
+      font-weight: bold;
+      float: right;
+      font-size: 22px;
+      line-height: 20px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .closebtn:hover {
+      color: black;
     }
 
   </style>
@@ -416,14 +454,27 @@
   
       // 구매 요청이 왔을 때
       socket.on('itemBuySignal', function(){
-          console.log('In itemBuyRequest');
+        console.log('In itemBuyRequest');
 
-          var count = parseInt($('.signal').text());
-          $('.signal').text(count+1);
+        var count = parseInt($('.signal').text());
+        $('.signal').text(count+1);
 
-          alert('구매 요청이 들어왔습니다.');
-          $('.signal').css('display', 'block');
-          $('.menu_button').eq(1).trigger('click');
+        $('.signal').css('display', 'block');
+
+        var alert = $('.alert').eq(0).clone();
+        var text = '구매 요청이 들어왔습니다.';
+
+        alert.append(text);
+        alert.addClass('success');
+        alert.css('display', 'block');
+        alert.on('click', function(){
+          if(parseInt($('.signal').text()) > 0){
+            $('.menu_button').eq(1).trigger('click');
+          }
+          $(this).remove();
+        });
+
+        $('.bottom').append(alert);
       });
 
       // 상품 관리 버튼 클릭
@@ -445,19 +496,44 @@
 
       // 상품 취소 완료
       socket.on('itemCancelSignal', function(data){
-        alert(data.id + ' ' + data.name + '상품을 취소 했습니다.');
-        // window.location.reload();
+        var alert = $('.alert').eq(0).clone();
+        var text = 'id : ' + data.id + ' ' + data.name + '의 상품이 취소 되었습니다.';
+
+        alert.append(text);
+        alert.addClass('cancel');
+        alert.css('display', 'block');
+        alert.on('click', function(){
+          $(this).remove();
+        });
+
+        $('.bottom').append(alert);
         $('.menu_button').eq(1).trigger('click');
       });
 
       // 상품 구매 수락 완료
       socket.on('itemPermitSignal', function(data){
+        var alert = $('.alert').eq(0).clone();
+        var text = 'id : ' + data.id + ' ' + data.name + '의 상품이 판매 되었습니다.';
+
+        alert.append(text);
+        alert.addClass('permit');
+        alert.css('display', 'block');
+        alert.on('click', function(){
+          $(this).remove();
+        });
+
+        $('.bottom').append(alert);
+        $('.menu_button').eq(1).trigger('click');
+
         $('fa-circle-o[item_id=' + data.id + ']').removeClass('fa-circle-o');
         $('fa-circle-o[item_id=' + data.id + ']').addClass('fa-check-circle-o');
-        // window.location.reload();
-        $('.menu_button').eq(1).trigger('click');
       });
 
+    }
+    
+    function closebtn(e){
+      $(e).remove();
+      $('.menu_button').eq(1).trigger('click');
     }
   </script>
 </head>
@@ -553,6 +629,12 @@
         </div>
       </form>
     </div>
+
+    <div class="bottom">
+      <div class="alert">
+          <span class="closebtn" onclick="closebtn(this.parentElement)">&times;</span>
+      </div>
+  </div>
   </div>
 </body>
 </html>

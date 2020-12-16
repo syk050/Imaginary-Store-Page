@@ -175,6 +175,45 @@
         .page_button_active{
             background-color: rgba(255, 255, 255, 0.7);
         }
+
+        /* 알림 창 */
+        .bottom{
+            position: fixed;
+            bottom: 0;
+        }
+        .alert {
+            display: none;
+            padding: 20px;
+            color: white;
+            margin-bottom: 15px;
+            left: 15px;
+            z-index: 9;
+            border-radius: 5px;
+            max-width: 510px;
+        }
+        .alert.cancel{
+            background-color: #ff9800;
+        }
+        .alert.permit{
+            background-color: #4CAF50;
+        }
+        .alert.success{
+            background-color: #2196F3;
+        }
+        .closebtn {
+            margin-left: 15px;
+            color: white;
+            font-weight: bold;
+            float: right;
+            font-size: 22px;
+            line-height: 20px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .closebtn:hover {
+            color: black;
+        }
+
     </style>
 
     <script src="http://code.jquery.com/jquery-3.1.1.js"></script>
@@ -370,14 +409,35 @@
             socket.on('itemBuySignal', function(){
                 console.log('In itemBuyRequest');
 
-                alert('상품이 담겼습니다.')
+                var alert = $('.alert').eq(0).clone();
+                var text = '상품이 담겼습니다.';
+
+                alert.append(text);
+                alert.addClass('success');
+                alert.css('display', 'block');
+                alert.on('click', function(){
+                    $(this).remove();
+                });
+
+                $('.bottom').append(alert);
+
                 var count = parseInt($('.mypage').text());
                 $('.mypage').text(count+1);
             });
 
             // 상품 구매 취소 당했을 때
             socket.on('itemCancelSignal', function(data){
-                alert(data.series + '에 ' + data.name + '의 상품이 취소 됐습니다.');
+                var alert = $('.alert').eq(0).clone();
+                var text = data.series + '에 ' + data.name + '의 상품이 취소 됐습니다.';
+
+                alert.append(text);
+                alert.addClass('cancel');
+                alert.css('display', 'block');
+                alert.on('click', function(){
+                    $(this).remove();
+                });
+
+                $('.bottom').append(alert);
 
                 var count = parseInt($('.mypage').text());
                 $('.mypage').text(count-1);
@@ -386,11 +446,27 @@
 
             // 상품 구매가 수락 되었을 때
             socket.on('itemPermitSignal', function(data){
-                alert(data.series + '에 ' + data.name + '의 상품이 구매 되었습니다.');
+                var alert = $('.alert').eq(0).clone();
+                var text = data.series + '에 ' + data.name + '의 상품이 구매 되었습니다.';
+
+                alert.append(text);
+                alert.addClass('permit');
+                alert.css('display', 'block');
+                alert.on('click', function(){
+                    $(this).remove();
+                });
+
+                $('.bottom').append(alert);
 
                 var count = parseInt($('.mypage').text());
                 $('.mypage').text(count-1);
             });
+
+        }
+
+        // 알림 창 닫기 버튼 클릭시
+        function closebtn(e){
+            $(e).remove();
         }
     </script>
 
@@ -458,6 +534,11 @@
         <!-- 상품 설명 창 -->
         <div class="modal">
             
+        </div>
+    </div>
+    <div class="bottom">
+        <div class="alert">
+            <span class="closebtn" onclick="closebtn(this.parentElement)">&times;</span>
         </div>
     </div>
 </body>
