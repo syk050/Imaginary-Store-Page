@@ -217,6 +217,7 @@ app.get('/__!truncate_products__', function(request, response){
   });
 });
 
+// 통신
 io.sockets.on('connection', function(socket){
   console.log('io connection');
 
